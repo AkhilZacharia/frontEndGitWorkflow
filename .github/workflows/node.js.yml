@@ -1,0 +1,44 @@
+name: React CI/CD Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    
+      # Step 1: Checkout the code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Use the version of Node.js your project requires
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run tests (if applicable)
+      - name: Run tests
+        run: npm test -- --coverage
+
+      # Step 5: Build the React app
+      - name: Build React app
+        run: npm run build
+
+      # Step 6: Deploy to GitHub Pages (optional)
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'  # Only deploy on push to the main branch
+        run: |
+          npm install gh-pages --save-dev
+          npm run deploy
+
